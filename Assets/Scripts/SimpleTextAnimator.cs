@@ -48,7 +48,7 @@ public class SimpleTextAnimator : MonoBehaviour
     /// Should use a narrator when typing text?
     /// </summary>
     [SerializeField]
-    private bool m_UseAudioSampleAsNarrator = false;
+    private bool m_AudioNarratoEnabled = false;
 
     /// <summary>
     /// Narrator voice clip.
@@ -96,7 +96,7 @@ public class SimpleTextAnimator : MonoBehaviour
 
         float narratorSpeed = 0f;
 
-        if (m_UseAudioSampleAsNarrator)
+        if (m_AudioNarratoEnabled)
         {
             narratorSpeed = m_NarratorClip.length / m_Content.Length;
 
