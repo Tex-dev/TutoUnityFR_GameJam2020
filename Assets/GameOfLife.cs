@@ -78,7 +78,7 @@ public class GameOfLife : MonoBehaviour
 
     public void SelectCell(CellInfo cell)
     {
-        cell.SetContentManually(m_CurrentContentMode);
+        cell.SetContentManually(m_CurrentContentMode, 200f);
     }
 
     private void Play()
@@ -107,20 +107,23 @@ public class GameOfLife : MonoBehaviour
         {
             foreach (CellInfo cell in Cells)
             {
-                PreyPredatorModel(cell);
+                if (cell.GetContent != CellInfo.Content.water)
+                {
+                    PreyPredatorModel(cell);
 
-                VegetalLogic(cell);
+                    VegetalLogic(cell);
 
-                HerbivorusLogic(cell);
+                    HerbivorusLogic(cell);
 
-                CarnivorusLogic(cell);
+                    CarnivorusLogic(cell);
+                }
             }
 
             foreach (CellInfo cell in Cells)
             {
                 cell.UpdateContent();
             }
-            yield return new WaitForSeconds(PlaySpeed);
+            yield return new WaitForEndOfFrame();//new WaitForSeconds(PlaySpeed);
         }
     }
 
@@ -133,6 +136,10 @@ public class GameOfLife : MonoBehaviour
         deltaHerbivorus = deltaHerbivorus - m_HerbivorusCarnivorusMeetingRate * cell.HerbivorusPopulation * cell.CarnivorusPopulation;
 
         float deltaCarnivorus = m_CarnivorusGrowth * cell.HerbivorusPopulation * cell.CarnivorusPopulation - m_CarnivorusLossRate * cell.CarnivorusPopulation;
+
+        deltaPlant *= Time.deltaTime * 1f / PlaySpeed;
+        deltaHerbivorus *= Time.deltaTime * 1f / PlaySpeed;
+        deltaCarnivorus *= Time.deltaTime * 1f / PlaySpeed;
 
         cell.PlantPopulation += deltaPlant;
         cell.PlantPopulation = Mathf.Floor(Mathf.Clamp(cell.PlantPopulation, 0f, MAX_POPULATION_PER_CELL));

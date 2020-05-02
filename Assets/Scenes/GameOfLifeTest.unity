@@ -6123,7 +6123,7 @@ MonoBehaviour:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
-          m_FloatArgument: 0.1
+          m_FloatArgument: 0.3
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
@@ -39430,14 +39430,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PlaySpeed: 1
   m_PlantGrowth: 2
-  m_PlantHerbivorusMeetingRate: 0.001
+  m_PlantHerbivorusMeetingRate: 0.0008
   m_PlantEmigrationRate: 0.1
-  m_HerbivorusGrowth: 0.0001
+  m_HerbivorusGrowth: 0.00015
   m_HerbivorusLossRate: 0.3
   m_HerbivorusEmigrationRate: 0.1
-  m_HerbivorusCarnivorusMeetingRate: 0.0002
-  m_CarnivorusGrowth: 0.002
-  m_CarnivorusLossRate: 0.37
+  m_HerbivorusCarnivorusMeetingRate: 0.0003
+  m_CarnivorusGrowth: 0.0018
+  m_CarnivorusLossRate: 4
   m_CarnivorusEmigrationRate: 0.05
 --- !u!114 &2038966114
 MonoBehaviour:

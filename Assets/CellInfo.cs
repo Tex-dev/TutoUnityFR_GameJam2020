@@ -12,6 +12,7 @@ public class CellInfo : MonoBehaviour
         plant = 1,
         herbivorus = 2,
         carnivorus = 4,
+        water = 8,
     }
 
     public int X = 0;
@@ -60,6 +61,13 @@ public class CellInfo : MonoBehaviour
         m_NextContent = Content.dead;
 
         SetContentManually(Content.dead);
+
+        if (UnityEngine.Random.value > 0.8f)
+        {
+            m_Content = Content.water;
+            m_PlantImage.fillAmount = 1f;
+            m_PlantImage.color = Color.blue;
+        }
     }
 
     public void SetNextContent(Content content)
@@ -67,7 +75,7 @@ public class CellInfo : MonoBehaviour
         m_NextContent = content;
     }
 
-    public void SetContentManually(Content content)
+    public void SetContentManually(Content content, float populationToAdd = 10f)
     {
         m_Content = content;
         m_NextContent = content;
@@ -75,17 +83,17 @@ public class CellInfo : MonoBehaviour
         switch (content)
         {
             case Content.plant:
-                PlantPopulation += 10f;
+                PlantPopulation += populationToAdd;
 
                 break;
 
             case Content.herbivorus:
-                HerbivorusPopulation += 10f;
+                HerbivorusPopulation += populationToAdd;
 
                 break;
 
             case Content.carnivorus:
-                CarnivorusPopulation += 10f;
+                CarnivorusPopulation += populationToAdd;
 
                 break;
 
@@ -109,6 +117,9 @@ public class CellInfo : MonoBehaviour
 
     public void UpdateContent()
     {
+        if (m_Content == Content.water)
+            return;
+
         if (TotalPopulation != PlantPopulation)
             m_PlantImage.fillAmount = TotalPopulation != 0f ? PlantPopulation / TotalPopulation : 0f;
         else
