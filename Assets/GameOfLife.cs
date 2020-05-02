@@ -15,6 +15,8 @@ public class GameOfLife : MonoBehaviour
 
     public float PlaySpeed = 0.5f;
 
+    public Gradient PopulationGradient = null;
+
     private bool m_ShouldPlay = false;
 
     private CellInfo.Content m_CurrentContentMode = CellInfo.Content.dead;
@@ -70,13 +72,9 @@ public class GameOfLife : MonoBehaviour
         {
             foreach (CellInfo cell in Cells)
             {
-                //if (cell.GetContent == CellInfo.Content.vegetal)
-                //{
-                //    VegetalLogic(cell);
-                //}
                 VegetalLogic(cell);
 
-                VegetarianLogic(cell);
+                HerbivorusLogic(cell);
 
                 CarnivorusLogic(cell);
             }
@@ -94,7 +92,7 @@ public class GameOfLife : MonoBehaviour
         int n = GetNeighboursAmount(cell, CellInfo.Content.carnivorus);
 
         //                   != CellInfo.Content.dead
-        if ((cell.GetContent == CellInfo.Content.carnivorus && n == 2) || (n == 3 && GetNeighboursAmount(cell, CellInfo.Content.vegetarian) >= 1))
+        if ((cell.GetContent == CellInfo.Content.carnivorus && n == 2) || (n == 3 && GetNeighboursAmount(cell, CellInfo.Content.herbivorus) >= 1))
         {
             cell.SetNextContent(CellInfo.Content.carnivorus);
         }
@@ -105,33 +103,17 @@ public class GameOfLife : MonoBehaviour
         }
     }
 
-    private void VegetarianLogic(CellInfo cell)
+    private void HerbivorusLogic(CellInfo cell)
     {
-        int n = GetNeighboursAmount(cell, CellInfo.Content.vegetarian);
+        int n = GetNeighboursAmount(cell, CellInfo.Content.herbivorus);
 
-        //if (n == 2)
-        //{
-        //    float chance = Random.Range(0f, 1f);
-        //    chance -= GetNeighboursAmount(cell, CellInfo.Content.vegetal) / 6f;
-        //    if (chance < 0f)
-        //        cell.SetNextContent(CellInfo.Content.vegetarian);
-        //}
-        //else
-        //if (n >= 4)
-        //    cell.SetNextContent(CellInfo.Content.dead);
-        //else
-        //{
-        //    if (cell.GetContent == CellInfo.Content.vegetarian)
-        //        cell.SetNextContent(CellInfo.Content.dead);
-        //}
-
-        if ((cell.GetContent == CellInfo.Content.vegetarian && n == 2) || (n == 3 && GetNeighboursAmount(cell, CellInfo.Content.vegetal) >= 1))
+        if ((cell.GetContent == CellInfo.Content.herbivorus && n == 2) || (n == 3 && GetNeighboursAmount(cell, CellInfo.Content.vegetal) >= 1))
         {
-            cell.SetNextContent(CellInfo.Content.vegetarian);
+            cell.SetNextContent(CellInfo.Content.herbivorus);
         }
         else
         {
-            if (cell.GetContent == CellInfo.Content.vegetarian)
+            if (cell.GetContent == CellInfo.Content.herbivorus)
                 cell.SetNextContent(CellInfo.Content.dead);
         }
     }
@@ -140,29 +122,10 @@ public class GameOfLife : MonoBehaviour
     {
         int n = GetNeighboursAmount(cell, CellInfo.Content.vegetal);
 
-        if (/*(cell.GetContent != CellInfo.Content.dead && n == 2) ||*/ n >= 2)
+        if (n >= 2)
         {
             cell.SetNextContent(CellInfo.Content.vegetal);
         }
-        //else
-        //{
-        //    if (cell.GetContent == CellInfo.Content.vegetarian)
-        //        cell.SetNextContent(CellInfo.Content.dead);
-        //}
-        //for (var i = -1; i <= 1; i += 1)
-        //{
-        //    for (var j = -1; j <= 1; j += 1)
-        //    {
-        //        var neighborX = (cell.X + i + GridWidth) % GridWidth;
-        //        var neighborY = (cell.Y + j + GridHeight) % GridHeight;
-
-        //        if (cell.X != neighborX - 1 && cell.X != neighborX && cell.X != neighborX + 1) continue;
-        //        if (cell.Y != neighborY - 1 && cell.Y != neighborY && cell.Y != neighborY + 1) continue;
-
-        //        if (neighborX == cell.X || neighborY == cell.Y)
-        //            CellsArray[neighborX, neighborY].SetNextContent(CellInfo.Content.vegetal);
-        //    }
-        //}
     }
 
     private int GetNeighboursAmount(CellInfo cell, CellInfo.Content type)
@@ -190,10 +153,5 @@ public class GameOfLife : MonoBehaviour
         }
 
         return aliveNeighbors;
-    }
-
-    // Update is called once per frame
-    private void Update()
-    {
     }
 }

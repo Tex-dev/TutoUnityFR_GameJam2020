@@ -10,14 +10,8 @@ public class CellInfo : MonoBehaviour
     {
         dead = 0,
         vegetal = 1,
-        vegetarian = 2,
+        herbivorus = 2,
         carnivorus = 3,
-    }
-
-    public enum Status
-    {
-        alive,
-        dead
     }
 
     public int X = 0;
@@ -27,6 +21,14 @@ public class CellInfo : MonoBehaviour
     public Content GetContent => m_Content;
 
     public Content GetNextContent => m_NextContent;
+
+    public float VegetalPercent = 0f;
+
+    public float HerbivorusPercent = 0f;
+
+    public float CarnivorusPercent = 0f;
+
+    public float TotalPercent => VegetalPercent + HerbivorusPercent + CarnivorusPercent;
 
     private Content m_Content = Content.dead;
 
@@ -69,14 +71,20 @@ public class CellInfo : MonoBehaviour
         switch (content)
         {
             case Content.vegetal:
+                if (TotalPercent < 100f)
+                    VegetalPercent += 10f;
                 m_Image.color = Color.green;
                 break;
 
-            case Content.vegetarian:
+            case Content.herbivorus:
+                if (TotalPercent < 100f)
+                    HerbivorusPercent += 10f;
                 m_Image.color = Color.yellow;
                 break;
 
             case Content.carnivorus:
+                if (TotalPercent < 100f)
+                    CarnivorusPercent += 10f;
                 m_Image.color = Color.red;
                 break;
 
