@@ -179,7 +179,7 @@ MonoBehaviour:
   m_TypingSpacebarSFX: {fileID: 8300000, guid: 330ab33d0be6dc64998179e56c177702, type: 3}
   m_CarriageReturnSFX: {fileID: 8300000, guid: 5412d8d5a9829d24ca03f844bb342a88, type: 3}
   m_TypingAudioSource: {fileID: 961084685}
-  m_UseAudioSampleAsNarrator: 1
+  m_AudioNarratoEnabled: 1
   m_NarratorClip: {fileID: 8300000, guid: afc992166341ad74b9efc60e227930f9, type: 3}
   m_NarratorAudioSource: {fileID: 961084686}
 --- !u!114 &961084683
