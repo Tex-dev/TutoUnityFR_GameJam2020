@@ -9,9 +9,9 @@ public class CellInfo : MonoBehaviour
     public enum Content
     {
         dead = 0,
-        vegetal = 1,
+        plant = 1,
         herbivorus = 2,
-        carnivorus = 3,
+        carnivorus = 4,
     }
 
     public int X = 0;
@@ -22,13 +22,24 @@ public class CellInfo : MonoBehaviour
 
     public Content GetNextContent => m_NextContent;
 
-    public float VegetalPercent = 0f;
+    public Vector3 GrowthDeltas = Vector3.zero;
 
-    public float HerbivorusPercent = 0f;
+    public float PlantPopulation = 0f;
 
-    public float CarnivorusPercent = 0f;
+    public float HerbivorusPopulation = 0f;
 
-    public float TotalPercent => VegetalPercent + HerbivorusPercent + CarnivorusPercent;
+    public float CarnivorusPopulation = 0f;
+
+    public float TotalPopulation => PlantPopulation + HerbivorusPopulation + CarnivorusPopulation;
+
+    [SerializeField]
+    private Image m_PlantImage = null;
+
+    [SerializeField]
+    private Image m_HerbivorusImage = null;
+
+    [SerializeField]
+    private Image m_CarnivorusImage = null;
 
     private Content m_Content = Content.dead;
 
@@ -36,13 +47,9 @@ public class CellInfo : MonoBehaviour
 
     private Button m_Button = null;
 
-    private Image m_Image = null;
-
     private void Awake()
     {
         m_Button = GetComponent<Button>();
-
-        m_Image = GetComponent<Image>();
     }
 
     public void InitCell(Action<CellInfo> OnClick)
@@ -51,11 +58,8 @@ public class CellInfo : MonoBehaviour
 
         m_Content = Content.dead;
         m_NextContent = Content.dead;
-    }
 
-    public void UpdateContent()
-    {
-        SetContent(m_NextContent);
+        SetContentManually(Content.dead);
     }
 
     public void SetNextContent(Content content)
@@ -63,37 +67,65 @@ public class CellInfo : MonoBehaviour
         m_NextContent = content;
     }
 
-    public void SetContent(Content content)
+    public void SetContentManually(Content content)
     {
         m_Content = content;
         m_NextContent = content;
 
         switch (content)
         {
-            case Content.vegetal:
-                if (TotalPercent < 100f)
-                    VegetalPercent += 10f;
-                m_Image.color = Color.green;
+            case Content.plant:
+                PlantPopulation += 10f;
+
                 break;
 
             case Content.herbivorus:
-                if (TotalPercent < 100f)
-                    HerbivorusPercent += 10f;
-                m_Image.color = Color.yellow;
+                HerbivorusPopulation += 10f;
+
                 break;
 
             case Content.carnivorus:
-                if (TotalPercent < 100f)
-                    CarnivorusPercent += 10f;
-                m_Image.color = Color.red;
+                CarnivorusPopulation += 10f;
+
                 break;
 
             case Content.dead:
-                m_Image.color = Color.black;
+                PlantPopulation = 0f;
+                HerbivorusPopulation = 0f;
+                CarnivorusPopulation = 0f;
+
+                m_PlantImage.fillAmount = 0f;
+                m_HerbivorusImage.fillAmount = 0f;
+                m_CarnivorusImage.fillAmount = 0f;
+
                 break;
 
             default:
                 break;
         }
+
+        UpdateContent();
+    }
+
+    public void UpdateContent()
+    {
+        if (TotalPopulation != PlantPopulation)
+            m_PlantImage.fillAmount = TotalPopulation != 0f ? PlantPopulation / TotalPopulation : 0f;
+        else
+            m_PlantImage.fillAmount = PlantPopulation / GameOfLife.MAX_POPULATION_PER_CELL;
+
+        if (TotalPopulation != HerbivorusPopulation)
+            m_HerbivorusImage.fillAmount = TotalPopulation != 0f ? HerbivorusPopulation / TotalPopulation : 0f;
+        else
+            m_HerbivorusImage.fillAmount = HerbivorusPopulation / GameOfLife.MAX_POPULATION_PER_CELL;
+
+        m_HerbivorusImage.transform.eulerAngles = new Vector3(0f, 0f, -m_PlantImage.fillAmount * 360f);
+
+        if (TotalPopulation != CarnivorusPopulation)
+            m_CarnivorusImage.fillAmount = TotalPopulation != 0f ? CarnivorusPopulation / TotalPopulation : 0f;
+        else
+            m_CarnivorusImage.fillAmount = CarnivorusPopulation / GameOfLife.MAX_POPULATION_PER_CELL;
+
+        m_CarnivorusImage.transform.eulerAngles = new Vector3(0f, 0f, -(m_PlantImage.fillAmount + m_HerbivorusImage.fillAmount) * 360f);
     }
 }
