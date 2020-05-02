@@ -8,10 +8,10 @@ public class CellInfo : MonoBehaviour
 {
     public enum Content
     {
-        empty,
-        vegetal,
-        vegetarian,
-        carnivorus
+        dead = 0,
+        vegetal = 1,
+        vegetarian = 2,
+        carnivorus = 3,
     }
 
     public enum Status
@@ -24,9 +24,13 @@ public class CellInfo : MonoBehaviour
 
     public int Y = 0;
 
-    public Status m_Status = Status.dead;
+    public Content GetContent => m_Content;
 
-    public Status m_NextStatus = Status.dead;
+    public Content GetNextContent => m_NextContent;
+
+    private Content m_Content = Content.dead;
+
+    private Content m_NextContent = Content.dead;
 
     private Button m_Button = null;
 
@@ -42,36 +46,41 @@ public class CellInfo : MonoBehaviour
     public void InitCell(Action<CellInfo> OnClick)
     {
         m_Button.onClick.AddListener(() => OnClick(this));
+
+        m_Content = Content.dead;
+        m_NextContent = Content.dead;
     }
 
-    public void UpdateStatus()
+    public void UpdateContent()
     {
-        m_Status = m_NextStatus;
-        switch (m_Status)
-        {
-            case Status.alive:
-                m_Image.color = Color.white;
-                break;
-
-            case Status.dead:
-                m_Image.color = Color.black;
-                break;
-
-            default:
-                break;
-        }
+        SetContent(m_NextContent);
     }
 
-    public void UpdateStatus(Status status)
+    public void SetNextContent(Content content)
     {
-        m_Status = status;
-        switch (status)
+        m_NextContent = content;
+    }
+
+    public void SetContent(Content content)
+    {
+        m_Content = content;
+        m_NextContent = content;
+
+        switch (content)
         {
-            case Status.alive:
-                m_Image.color = Color.white;
+            case Content.vegetal:
+                m_Image.color = Color.green;
                 break;
 
-            case Status.dead:
+            case Content.vegetarian:
+                m_Image.color = Color.yellow;
+                break;
+
+            case Content.carnivorus:
+                m_Image.color = Color.red;
+                break;
+
+            case Content.dead:
                 m_Image.color = Color.black;
                 break;
 

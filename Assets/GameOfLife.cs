@@ -17,6 +17,8 @@ public class GameOfLife : MonoBehaviour
 
     private bool m_ShouldPlay = false;
 
+    private CellInfo.Content m_CurrentContentMode = CellInfo.Content.dead;
+
     // Start is called before the first frame update
     private void Start()
     {
@@ -31,27 +33,30 @@ public class GameOfLife : MonoBehaviour
         }
     }
 
+    public void SetMode(int mode)
+    {
+        m_CurrentContentMode = (CellInfo.Content)mode;
+    }
+
     public void SelectCell(CellInfo cell)
     {
-        switch (cell.m_Status)
+        if (cell.GetContent != m_CurrentContentMode)
         {
-            case CellInfo.Status.alive:
-                cell.UpdateStatus(CellInfo.Status.dead);
-                break;
-
-            case CellInfo.Status.dead:
-                cell.UpdateStatus(CellInfo.Status.alive);
-                break;
-
-            default:
-                break;
+            cell.SetContent(m_CurrentContentMode);
+        }
+        else
+        {
+            cell.SetContent(CellInfo.Content.dead);
         }
     }
 
     public void Play()
     {
-        m_ShouldPlay = true;
-        StartCoroutine(LifeLogic());
+        if (!m_ShouldPlay)
+        {
+            m_ShouldPlay = true;
+            StartCoroutine(LifeLogic());
+        }
     }
 
     public void Pause()
@@ -65,27 +70,102 @@ public class GameOfLife : MonoBehaviour
         {
             foreach (CellInfo cell in Cells)
             {
-                int n = GetNeighboursAmount(cell);
+                //if (cell.GetContent == CellInfo.Content.vegetal)
+                //{
+                //    VegetalLogic(cell);
+                //}
+                VegetalLogic(cell);
 
-                if ((cell.m_Status == CellInfo.Status.alive && n == 2) || n == 3)
-                {
-                    cell.m_NextStatus = CellInfo.Status.alive;
-                }
-                else
-                {
-                    cell.m_NextStatus = CellInfo.Status.dead;
-                }
+                VegetarianLogic(cell);
+
+                CarnivorusLogic(cell);
             }
 
             foreach (CellInfo cell in Cells)
             {
-                cell.UpdateStatus();
+                cell.UpdateContent();
             }
             yield return new WaitForSeconds(PlaySpeed);
         }
     }
 
-    private int GetNeighboursAmount(CellInfo cell)
+    private void CarnivorusLogic(CellInfo cell)
+    {
+        int n = GetNeighboursAmount(cell, CellInfo.Content.carnivorus);
+
+        //                   != CellInfo.Content.dead
+        if ((cell.GetContent == CellInfo.Content.carnivorus && n == 2) || (n == 3 && GetNeighboursAmount(cell, CellInfo.Content.vegetarian) >= 1))
+        {
+            cell.SetNextContent(CellInfo.Content.carnivorus);
+        }
+        else
+        {
+            if (cell.GetContent == CellInfo.Content.carnivorus)
+                cell.SetNextContent(CellInfo.Content.dead);
+        }
+    }
+
+    private void VegetarianLogic(CellInfo cell)
+    {
+        int n = GetNeighboursAmount(cell, CellInfo.Content.vegetarian);
+
+        //if (n == 2)
+        //{
+        //    float chance = Random.Range(0f, 1f);
+        //    chance -= GetNeighboursAmount(cell, CellInfo.Content.vegetal) / 6f;
+        //    if (chance < 0f)
+        //        cell.SetNextContent(CellInfo.Content.vegetarian);
+        //}
+        //else
+        //if (n >= 4)
+        //    cell.SetNextContent(CellInfo.Content.dead);
+        //else
+        //{
+        //    if (cell.GetContent == CellInfo.Content.vegetarian)
+        //        cell.SetNextContent(CellInfo.Content.dead);
+        //}
+
+        if ((cell.GetContent == CellInfo.Content.vegetarian && n == 2) || (n == 3 && GetNeighboursAmount(cell, CellInfo.Content.vegetal) >= 1))
+        {
+            cell.SetNextContent(CellInfo.Content.vegetarian);
+        }
+        else
+        {
+            if (cell.GetContent == CellInfo.Content.vegetarian)
+                cell.SetNextContent(CellInfo.Content.dead);
+        }
+    }
+
+    private void VegetalLogic(CellInfo cell)
+    {
+        int n = GetNeighboursAmount(cell, CellInfo.Content.vegetal);
+
+        if (/*(cell.GetContent != CellInfo.Content.dead && n == 2) ||*/ n >= 2)
+        {
+            cell.SetNextContent(CellInfo.Content.vegetal);
+        }
+        //else
+        //{
+        //    if (cell.GetContent == CellInfo.Content.vegetarian)
+        //        cell.SetNextContent(CellInfo.Content.dead);
+        //}
+        //for (var i = -1; i <= 1; i += 1)
+        //{
+        //    for (var j = -1; j <= 1; j += 1)
+        //    {
+        //        var neighborX = (cell.X + i + GridWidth) % GridWidth;
+        //        var neighborY = (cell.Y + j + GridHeight) % GridHeight;
+
+        //        if (cell.X != neighborX - 1 && cell.X != neighborX && cell.X != neighborX + 1) continue;
+        //        if (cell.Y != neighborY - 1 && cell.Y != neighborY && cell.Y != neighborY + 1) continue;
+
+        //        if (neighborX == cell.X || neighborY == cell.Y)
+        //            CellsArray[neighborX, neighborY].SetNextContent(CellInfo.Content.vegetal);
+        //    }
+        //}
+    }
+
+    private int GetNeighboursAmount(CellInfo cell, CellInfo.Content type)
     {
         int aliveNeighbors = 0;
 
@@ -96,9 +176,12 @@ public class GameOfLife : MonoBehaviour
                 var neighborX = (cell.X + i + GridWidth) % GridWidth;
                 var neighborY = (cell.Y + j + GridHeight) % GridHeight;
 
+                if (cell.X != neighborX - 1 && cell.X != neighborX && cell.X != neighborX + 1) continue;
+                if (cell.Y != neighborY - 1 && cell.Y != neighborY && cell.Y != neighborY + 1) continue;
+
                 if (neighborX != cell.X || neighborY != cell.Y)
                 {
-                    if (CellsArray[neighborX, neighborY].m_Status == CellInfo.Status.alive)
+                    if (CellsArray[neighborX, neighborY].GetContent == type)
                     {
                         aliveNeighbors += 1;
                     }
