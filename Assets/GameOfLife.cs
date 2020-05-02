@@ -9,12 +9,20 @@ public class GameOfLife : MonoBehaviour
 
     private CellInfo[,] CellsArray;
 
+    public int GridWidth = 10;
+
+    public int GridHeight = 10;
+
+    public float PlaySpeed = 0.5f;
+
+    private bool m_ShouldPlay = false;
+
     // Start is called before the first frame update
     private void Start()
     {
         Cells = GetComponentsInChildren<CellInfo>().ToList();
 
-        CellsArray = new CellInfo[10, 10];
+        CellsArray = new CellInfo[GridWidth, GridHeight];
 
         foreach (CellInfo cell in Cells)
         {
@@ -40,19 +48,65 @@ public class GameOfLife : MonoBehaviour
         }
     }
 
+    public void Play()
+    {
+        m_ShouldPlay = true;
+        StartCoroutine(LifeLogic());
+    }
+
+    public void Pause()
+    {
+        m_ShouldPlay = false;
+    }
+
     private IEnumerator LifeLogic()
     {
-        while (Application.isPlaying)
+        while (m_ShouldPlay)
         {
-            yield return new WaitForSeconds(5f);
+            foreach (CellInfo cell in Cells)
+            {
+                int n = GetNeighboursAmount(cell);
+
+                if ((cell.m_Status == CellInfo.Status.alive && n == 2) || n == 3)
+                {
+                    cell.m_NextStatus = CellInfo.Status.alive;
+                }
+                else
+                {
+                    cell.m_NextStatus = CellInfo.Status.dead;
+                }
+            }
+
+            foreach (CellInfo cell in Cells)
+            {
+                cell.UpdateStatus();
+            }
+            yield return new WaitForSeconds(PlaySpeed);
         }
     }
 
     private int GetNeighboursAmount(CellInfo cell)
     {
-        int neighbours = 0;
+        int aliveNeighbors = 0;
 
-        return neighbours;
+        for (var i = -1; i <= 1; i += 1)
+        {
+            for (var j = -1; j <= 1; j += 1)
+            {
+                var neighborX = (cell.X + i + GridWidth) % GridWidth;
+                var neighborY = (cell.Y + j + GridHeight) % GridHeight;
+
+                if (neighborX != cell.X || neighborY != cell.Y)
+                {
+                    if (CellsArray[neighborX, neighborY].m_Status == CellInfo.Status.alive)
+                    {
+                        aliveNeighbors += 1;
+                    }
+                }
+            }
+        }
+
+        return aliveNeighbors;
     }
 
     // Update is called once per frame

@@ -26,6 +26,8 @@ public class CellInfo : MonoBehaviour
 
     public Status m_Status = Status.dead;
 
+    public Status m_NextStatus = Status.dead;
+
     private Button m_Button = null;
 
     private Image m_Image = null;
@@ -40,6 +42,24 @@ public class CellInfo : MonoBehaviour
     public void InitCell(Action<CellInfo> OnClick)
     {
         m_Button.onClick.AddListener(() => OnClick(this));
+    }
+
+    public void UpdateStatus()
+    {
+        m_Status = m_NextStatus;
+        switch (m_Status)
+        {
+            case Status.alive:
+                m_Image.color = Color.white;
+                break;
+
+            case Status.dead:
+                m_Image.color = Color.black;
+                break;
+
+            default:
+                break;
+        }
     }
 
     public void UpdateStatus(Status status)
