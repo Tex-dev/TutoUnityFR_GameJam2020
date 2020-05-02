@@ -77,6 +77,9 @@ public class CellInfo : MonoBehaviour
 
     public void SetContentManually(Content content, float populationToAdd = 10f)
     {
+        if (m_Content == Content.water)
+            return;
+
         m_Content = content;
         m_NextContent = content;
 
