@@ -147,7 +147,7 @@ public class SimpleTextAnimator : MonoBehaviour
             Color color = m_Text.color;
             m_Text.color = new Color(color.r, color.g, color.b, color.a - 0.01f);
 
-            yield return new WaitForSeconds(m_TimeBeforeDisable / 1000.0f);
+            yield return new WaitForSeconds(m_TimeBeforeDisable / 100.0f);
         }
 
         OnAnimationEnded?.Invoke();

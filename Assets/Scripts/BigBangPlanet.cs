@@ -1,39 +1,34 @@
-﻿using System.Collections;
+﻿using System;
 using UnityEngine;
 
-[RequireComponent(typeof(Renderer))]
 public class BigBangPlanet : MonoBehaviour
 {
     private Vector3     m_Dir;
     private bool        m_go = false;
+
+    private bool        m_rotate = false;
+    private Vector3     m_axis;
     
-    [SerializeField]
-    Material[]          m_PlanetsMaterials;
-    
-    [SerializeField]
-    Material[]          m_SunsMaterials;
+    private float       m_size;
+    private float       m_stepSizeBySecond;
 
 
     // Start is called before the first frame update
     void Start()
     {
-        float size = Random.Range(0.5f, 2.5f);
-        transform.localScale = new Vector3(size, size, size);
+        m_size = UnityEngine.Random.Range(0.5f, 2.5f);
 
-        /*
-        if (Random.Range(0.0f, 1.0f) < 0.95f)
-            GetComponent<Renderer>().material = m_PlanetsMaterials[Random.Range(0, m_PlanetsMaterials.Length)];
+        if(GetComponent<Planet>() != null)
+            transform.localScale = new Vector3(0.0f, 0.0f, 0.0f);
         else
-            GetComponent<Renderer>().material = m_SunsMaterials[Random.Range(0, m_SunsMaterials.Length)];//*/
+            transform.localScale = new Vector3(m_size, m_size, m_size);
 
-//        m_Dir = new Vector3(Random.Range(-1.0f, 1.0f), Random.Range(-1.0f, 1.0f), Random.Range(-1.0f, 1.0f));
-//        m_Dir.Normalize();
-        m_Dir = Random.onUnitSphere;
+            m_Dir = UnityEngine.Random.onUnitSphere;
 
         if (Vector3.Dot(m_Dir, Vector3.back) > 0.0f)
             m_Dir *= -1.0f;
 
-        m_Dir *= Random.Range(0.1f, 0.5f);
+        m_Dir *= UnityEngine.Random.Range(0.1f, 0.5f);
     }
 
     // Update is called once per frame
@@ -42,19 +37,36 @@ public class BigBangPlanet : MonoBehaviour
         if(m_go)
         {
             transform.Translate(m_Dir);
+
+            if (GetComponent<Planet>() != null)
+            {
+                Vector3 scale = transform.localScale;
+                transform.localScale = scale + new Vector3(m_stepSizeBySecond * Time.deltaTime, m_stepSizeBySecond * Time.deltaTime, m_stepSizeBySecond * Time.deltaTime);
+            }
+        }
+
+        if(m_rotate)
+        {
+            transform.Rotate(m_axis, 7.0f * Time.deltaTime, Space.World);
         }
     }
 
-    public void Go()
+    public void Go(float expansionTime)
     {
         m_go = true;
 
-        Invoke("NoGo", 4.0f);
+        m_stepSizeBySecond = m_size / expansionTime;
     }
 
-    private void NoGo()
+    public void Stop()
     {
         m_go = false;
+    }
+
+    public void Rotate(Vector3 axis)
+    {
+        m_rotate = true;
+        m_axis = axis;
     }
 
 }
