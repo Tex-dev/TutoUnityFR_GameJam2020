@@ -55,7 +55,7 @@ public class BlinkTextAnimator : MonoBehaviour
             }
 
 
-            yield return new WaitForSeconds(m_Time/1000.0f);
+            yield return new WaitForSeconds(m_Time/100.0f);
         }
     }
 }
