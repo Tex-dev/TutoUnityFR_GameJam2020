@@ -1,5 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -63,6 +63,12 @@ public class SimpleTextAnimator : MonoBehaviour
     private AudioSource m_NarratorAudioSource = null;
 
     /// <summary>
+    /// Next text
+    /// </summary>
+    [SerializeField]
+    private GameObject m_nextText = null;
+
+    /// <summary>
     /// Text UI element.
     /// </summary>
     private Text m_Text = null;
@@ -71,6 +77,14 @@ public class SimpleTextAnimator : MonoBehaviour
     /// Text content to display.
     /// </summary>
     private string m_Content = "";
+
+    /// <summary>
+    /// Time before the text disappears for the next text.
+    /// </summary>
+    [SerializeField]
+    private float m_TimeBeforeDisable = 0.0f;
+
+    public Action OnAnimationEnded;
 
     /// <summary>
     /// Start is called by Unity after initialization.
@@ -83,6 +97,7 @@ public class SimpleTextAnimator : MonoBehaviour
 
         m_Content = m_Text.text;
         m_Text.text = "";
+        m_nextText.SetActive(false);
 
         StartCoroutine(Animate());
     }
@@ -126,5 +141,17 @@ public class SimpleTextAnimator : MonoBehaviour
         }
 
         m_TypingAudioSource.PlayOneShot(m_CarriageReturnSFX);
+
+        while(m_Text.color.a >0.0f)
+        {
+            Color color = m_Text.color;
+            m_Text.color = new Color(color.r, color.g, color.b, color.a - 0.01f);
+
+            yield return new WaitForSeconds(m_TimeBeforeDisable / 1000.0f);
+        }
+
+        OnAnimationEnded?.Invoke();
+        m_nextText.SetActive(true);
+        gameObject.SetActive(false);
     }
 }
