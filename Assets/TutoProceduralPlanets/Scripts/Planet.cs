@@ -75,6 +75,27 @@ public class Planet : MonoBehaviour
         }
     }
 
+    public float GetLiveableAreaPercent()
+    {
+        float liveableAreaPercent = 0.0f;
+
+        for (int i = 0; i < 6; i++)
+        {
+            if (m_meshFilters[i].gameObject.activeSelf)
+            {
+                MapInfo mapInfo = m_meshFilters[i].gameObject.GetComponent<MapInfo>();
+                if (mapInfo == null)
+                    return 0.0f;
+
+                liveableAreaPercent += mapInfo.GetLiveableAreaPercent(m_shapeGenerator.m_elevationMinMax.Min + (m_shapeGenerator.m_elevationMinMax.Max - m_shapeGenerator.m_elevationMinMax.Min) * 5f / 100f);
+            }
+        }
+
+        liveableAreaPercent /= 6.0f;
+
+        return liveableAreaPercent;
+    }
+
     public void GeneratePlanet()
     {
         Initialize();
