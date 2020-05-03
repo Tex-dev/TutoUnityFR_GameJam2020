@@ -24,7 +24,7 @@ MonoBehaviour:
         m_baseRoughness: 1.07
         m_roughness: 2.2
         m_persistence: 0.5
-        m_centre: {x: 5.13, y: -0.68, z: -0.42}
+        m_centre: {x: -10.89, y: -2.29, z: 4.9}
         m_minValue: 0.98
       m_rigidNoiseSettings:
         m_strength: 1

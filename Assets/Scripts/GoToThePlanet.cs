@@ -76,10 +76,10 @@ public class GoToThePlanet : MonoBehaviour
         m_targetRotation = Quaternion.LookRotation(m_planetToMove.position, transform.position);
         m_targetDistance = m_planetToMove.localScale.x * 1.9f;//*/
 
-        //       m_planetToMove.gameObject.name = "My exoplanet";
+//       m_planetToMove.gameObject.name = "My exoplanet";
 
-        //       m_planetToMove.GetComponent<Planet>().m_res = 256;
-        //       m_planetToMove.GetComponent<Planet>().GeneratePlanet();
+//       m_planetToMove.GetComponent<Planet>().m_res = 256;
+//       m_planetToMove.GetComponent<Planet>().GeneratePlanet();
 
         /*
         GameObject go = Instantiate(new GameObject(), m_targetPosition, m_targetRotation, null);

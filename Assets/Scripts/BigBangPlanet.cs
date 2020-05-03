@@ -19,12 +19,12 @@ public class BigBangPlanet : MonoBehaviour
         if (m_size == 0.0f)
             m_size = UnityEngine.Random.Range(0.5f, 2.5f);
 
-        if(GetComponent<Planet>() != null)
+        if (GetComponent<Planet>() != null)
             transform.localScale = new Vector3(0.0f, 0.0f, 0.0f);
         else
             transform.localScale = new Vector3(m_size, m_size, m_size);
 
-            m_Dir = UnityEngine.Random.onUnitSphere;
+        m_Dir = UnityEngine.Random.onUnitSphere;
 
         if (Vector3.Dot(m_Dir, Vector3.back) > 0.0f)
             m_Dir *= -1.0f;

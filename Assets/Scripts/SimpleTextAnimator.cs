@@ -84,6 +84,9 @@ public class SimpleTextAnimator : MonoBehaviour
     [SerializeField]
     private float m_TimeBeforeDisable = 0.0f;
 
+    [SerializeField]
+    private float m_endOffset = 0.0f;
+
     public Action OnAnimationEnded;
 
     /// <summary>
@@ -115,7 +118,7 @@ public class SimpleTextAnimator : MonoBehaviour
 
         if (m_AudioNarratoEnabled)
         {
-            narratorSpeed = m_NarratorClip.length / m_Content.Length;
+            narratorSpeed = (m_NarratorClip.length - m_endOffset) / m_Content.Length;
 
             m_NarratorAudioSource.PlayOneShot(m_NarratorClip);
         }

@@ -27,9 +27,6 @@ public class BigBang : MonoBehaviour
 
     public Action                   OnExpansionEnded;
 
-    [SerializeField]
-    private Material[]              m_materials = null;
-
 
 
     // Start is called before the first frame update
@@ -73,10 +70,9 @@ public class BigBang : MonoBehaviour
         for (int i = 0; i < m_NbPlanet; i++)
         {
             GameObject go = Instantiate(m_PlanetPrefab, transform);
-            go.AddComponent<BigBangPlanet>();
-            go.GetComponent<Renderer>().sharedMaterial = m_materials[UnityEngine.Random.Range(0, m_materials.Length)];
+            go.GetComponent<Renderer>().sharedMaterial.SetVector("_rand", new Vector4(UnityEngine.Random.Range(0.0f, 255.0f), UnityEngine.Random.Range(0.0f, 255.0f)));
 
-            if(i%9 == 0)
+            if (i%9 == 0)
             {
                 go = Instantiate(m_SunPrefab[UnityEngine.Random.Range(0, m_SunPrefab.Length)], transform);
                 go.AddComponent<BigBangPlanet>();
