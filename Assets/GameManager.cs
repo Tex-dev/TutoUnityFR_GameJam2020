@@ -176,8 +176,10 @@ public class GameManager : MonoBehaviour
             Instance.m_LifeLogics[i].transform.parent.parent.gameObject.GetComponent<Canvas>().enabled = false;
         }
 
-        if (ID >= 0 && ID < Instance.m_LifeLogics.Length)
-        {
+        if (ID >= 0 && ID < Instance.m_LifeLogics.Length)
+        {
+            Instance.gameObject.GetComponentInChildren<Canvas>().enabled = true; ;
+
             Instance.m_LifeLogics[ID].transform.parent.parent.gameObject.GetComponent<Canvas>().enabled = true;
             Instance.m_Menu.SetActive(true);
 
