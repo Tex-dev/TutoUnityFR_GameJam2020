@@ -96,6 +96,21 @@ public class Planet : MonoBehaviour
         return liveableAreaPercent;
     }
 
+    public void ActivateGameOfLife()
+    {
+        for (int i = 0; i < 6; i++)
+        {
+            if (m_meshFilters[i].gameObject.activeSelf)
+            {
+                MapInfo mapInfo = m_meshFilters[i].gameObject.GetComponent<MapInfo>();
+                if (mapInfo == null)
+                    return;
+
+                mapInfo.ActivateGameOfLife();
+            }
+        }
+    }
+
     public void GeneratePlanet()
     {
         Initialize();

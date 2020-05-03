@@ -10,6 +10,11 @@ public class MapInfo : MonoBehaviour
     public int ID = -1;
 
     public bool isGameOfLife = false;
+    
+    public void ActivateGameOfLife()
+    {
+        isGameOfLife = true;
+    }
 
     private void OnMouseUp()
     {
