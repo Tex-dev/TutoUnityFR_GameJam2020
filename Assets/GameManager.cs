@@ -74,9 +74,6 @@ public class GameManager : MonoBehaviour
     private LifeMachineHolder m_LifeManagerPrefab = null;
 
     [SerializeField]
-    private GameObject m_Menu = null;
-
-    [SerializeField]
     private Text m_PlantSeedText = null;
 
     [SerializeField]
@@ -105,7 +102,8 @@ public class GameManager : MonoBehaviour
 
             holder.gameObject.GetComponentInChildren<Canvas>().enabled = false;
         }
-        m_Menu.SetActive(false);
+
+        Instance.gameObject.GetComponentInChildren<Canvas>().enabled = false;
     }
 
     private void Update()
@@ -178,10 +176,9 @@ public class GameManager : MonoBehaviour
 
         if (ID >= 0 && ID < Instance.m_LifeLogics.Length)
         {
-            Instance.gameObject.GetComponentInChildren<Canvas>().enabled = true; ;
+            Instance.gameObject.GetComponentInChildren<Canvas>().enabled = true;
 
             Instance.m_LifeLogics[ID].transform.parent.parent.gameObject.GetComponent<Canvas>().enabled = true;
-            Instance.m_Menu.SetActive(true);
 
             Instance.m_CurrentLifeManager = Instance.m_LifeLogics[ID];
 
