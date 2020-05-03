@@ -76,6 +76,25 @@ public class LifeManager : MonoBehaviour
         }
     }
 
+    public void Reset()
+    {
+        foreach (CellInfo cell in Cells)
+        {
+            if (cell.GetContent != CellInfo.Content.water)
+            {
+                cell.SetContentManually(CellInfo.Content.dead);
+            }
+        }
+
+        PlantSeeds = 10;
+
+        HerbivorusSeeds = 10;
+
+        CarnivorusSeeds = 10;
+
+        UpdateSeedDisplay();
+    }
+
     public void ConfigureGrid(float[,] heighMap, float waterLevel, int planetResolution, int meshID)
     {
         if (m_Configured)
@@ -141,16 +160,23 @@ public class LifeManager : MonoBehaviour
         switch (GameManager.Instance.CurrentContentMode)
         {
             case CellInfo.Content.plant:
+
+                if (PlantSeeds < 1)
+                    return;
                 PlantSeeds--;
                 currentSeedValue = PlantSeeds;
                 break;
 
             case CellInfo.Content.herbivorus:
+                if (HerbivorusSeeds < 1)
+                    return;
                 HerbivorusSeeds--;
                 currentSeedValue = HerbivorusSeeds;
                 break;
 
             case CellInfo.Content.carnivorus:
+                if (CarnivorusSeeds < 1)
+                    return;
                 CarnivorusSeeds--;
                 currentSeedValue = CarnivorusSeeds;
                 break;
@@ -158,9 +184,6 @@ public class LifeManager : MonoBehaviour
             default:
                 break;
         }
-
-        if (currentSeedValue < 0)
-            return;
 
         cell.SetContentManually(GameManager.Instance.CurrentContentMode, 200f);
 
@@ -193,6 +216,42 @@ public class LifeManager : MonoBehaviour
     #endregion Player interactions
 
     #region Game of life Logic
+
+    public int PlantPopulation()
+    {
+        int pop = 0;
+
+        foreach (CellInfo cell in Cells)
+        {
+            pop += (int)cell.PlantPopulation;
+        }
+
+        return pop;
+    }
+
+    public int HerbivorusPopulation()
+    {
+        int pop = 0;
+
+        foreach (CellInfo cell in Cells)
+        {
+            pop += (int)cell.HerbivorusPopulation;
+        }
+
+        return pop;
+    }
+
+    public int CarnivorusPopulation()
+    {
+        int pop = 0;
+
+        foreach (CellInfo cell in Cells)
+        {
+            pop += (int)cell.CarnivorusPopulation;
+        }
+
+        return pop;
+    }
 
     private IEnumerator LifeLogic()
     {

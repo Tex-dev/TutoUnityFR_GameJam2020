@@ -40,28 +40,32 @@ public class GameManager : MonoBehaviour
     public float WaterLevel = 0f;
     public int PlanetResolution = 256;
 
-    [Header("Picker")]
-    public Image PickerBackground = null;
+    public long PlanetAge = 0;
 
-    public Image PickerIcon = null;
-
-    public Sprite PlantIcon = null;
-
-    public Sprite HerbivorusIcon = null;
-
-    public Sprite CarnivorusIcon = null;
-
-    public Sprite DeleteIcon = null;
-
-    public Color PlantColor = Color.white;
-
-    public Color HerbivorusColor = Color.white;
-
-    public Color CarnivorusColor = Color.white;
-
+    [Header("Picker")]
+    public Image PickerBackground = null;
+
+    public Image PickerIcon = null;
+
+    public Sprite PlantIcon = null;
+
+    public Sprite HerbivorusIcon = null;
+
+    public Sprite CarnivorusIcon = null;
+
+    public Sprite DeleteIcon = null;
+
+    public Color PlantColor = Color.white;
+
+    public Color HerbivorusColor = Color.white;
+
+    public Color CarnivorusColor = Color.white;
+
     public Color DeleteColor = Color.white;
 
     private LifeManager[] m_LifeLogics = null;
+
+    private LifeManager m_CurrentLifeManager = null;
 
     public CellInfo.Content CurrentContentMode = CellInfo.Content.dead;
 
@@ -81,8 +85,14 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private Text m_CarnivorusSeedText = null;
 
-    private void Awake()
-    {
+    [SerializeField]
+    private Text m_StatsDisplay = null;
+
+    [SerializeField]
+    private Text m_PlanetAgeDisplay = null;
+
+    private void Awake()
+    {
         SingletonStarter();
 
         m_LifeLogics = new LifeManager[6];
@@ -98,11 +108,65 @@ public class GameManager : MonoBehaviour
         m_Menu.SetActive(false);
     }
 
-    public static void SetPlanetParameters(float waterLevel, int planetResolution)
-    {
-        Instance.WaterLevel = waterLevel;
+    private void Update()
+    {
+        if (GamePlaySpeed != 0f)
+            PlanetAge += (long)((Time.deltaTime / GamePlaySpeed) * 100f);
+
+        m_PlanetAgeDisplay.text = $"Planet age : {PlanetAge} years";
+
+        m_StatsDisplay.text =
+            $"Plants pop.  \t:\t<color=green>{TotalPlantPopulation()}</color>\n" +
+            $"Rabbits pop. \t:\t<color=yellow>{TotalHerbivorusPopulation()}</color>\n" +
+            $"Foxes pop.   \t:\t<color=red>{TotalCarnivorusPopulation()}</color>\n";
+    }
 
-        Instance.PlanetResolution = planetResolution;
+    public int TotalPopulation()
+    {
+        return TotalPlantPopulation() + TotalHerbivorusPopulation() + TotalCarnivorusPopulation();
+    }
+
+    public int TotalPlantPopulation()
+    {
+        int pop = 0;
+
+        for (int i = 0; i < 6; i++)
+        {
+            pop += Instance.m_LifeLogics[i].PlantPopulation();
+        }
+
+        return pop;
+    }
+
+    public int TotalHerbivorusPopulation()
+    {
+        int pop = 0;
+
+        for (int i = 0; i < 6; i++)
+        {
+            pop += Instance.m_LifeLogics[i].HerbivorusPopulation();
+        }
+
+        return pop;
+    }
+
+    public int TotalCarnivorusPopulation()
+    {
+        int pop = 0;
+
+        for (int i = 0; i < 6; i++)
+        {
+            pop += Instance.m_LifeLogics[i].CarnivorusPopulation();
+        }
+
+        return pop;
+    }
+
+    public static void SetPlanetParameters(float waterLevel, int planetResolution)
+    {
+        Instance.WaterLevel = waterLevel;
+
+        Instance.PlanetResolution = planetResolution;
     }
 
     public static void SelectMesh(int ID, float[,] cellHeighMap)
@@ -117,50 +181,62 @@ public class GameManager : MonoBehaviour
             Instance.m_LifeLogics[ID].transform.parent.parent.gameObject.GetComponent<Canvas>().enabled = true;
             Instance.m_Menu.SetActive(true);
 
-            Instance.m_LifeLogics[ID].ConfigureGrid(cellHeighMap, Instance.WaterLevel, Instance.PlanetResolution, ID);
-            Instance.m_LifeLogics[ID].UpdateSeedDisplay();
-        }
+            Instance.m_CurrentLifeManager = Instance.m_LifeLogics[ID];
+
+            Instance.m_CurrentLifeManager.ConfigureGrid(cellHeighMap, Instance.WaterLevel, Instance.PlanetResolution, ID);
+            Instance.m_CurrentLifeManager.UpdateSeedDisplay();
+
+            Instance.m_CurrentLifeManager.Play();
+        }
     }
 
-    public void SetMode(int mode)
+    public void Reset()
     {
-        CurrentContentMode = (CellInfo.Content)mode;
+        m_CurrentLifeManager.Reset();
+    }
 
-        CellInfo.Content currentMode = (CellInfo.Content)mode;
-
-        switch (currentMode)
-        {
-            case CellInfo.Content.dead:
-                PickerBackground.color = DeleteColor;
-                PickerIcon.sprite = DeleteIcon;
-                break;
-
-            case CellInfo.Content.plant:
-                PickerBackground.color = PlantColor;
-                PickerIcon.sprite = PlantIcon;
-                break;
-
-            case CellInfo.Content.herbivorus:
-                PickerBackground.color = HerbivorusColor;
-                PickerIcon.sprite = HerbivorusIcon;
-                break;
-
-            case CellInfo.Content.carnivorus:
-                PickerBackground.color = CarnivorusColor;
-                PickerIcon.sprite = CarnivorusIcon;
-                break;
-
-            default:
-                break;
-        }
+    public void SetMode(int mode)
+    {
+        CurrentContentMode = (CellInfo.Content)mode;
+
+        CellInfo.Content currentMode = (CellInfo.Content)mode;
+
+        switch (currentMode)
+        {
+            case CellInfo.Content.dead:
+                PickerBackground.color = DeleteColor;
+                PickerIcon.sprite = DeleteIcon;
+                break;
+
+            case CellInfo.Content.plant:
+                PickerBackground.color = PlantColor;
+                PickerIcon.sprite = PlantIcon;
+                break;
+
+            case CellInfo.Content.herbivorus:
+                PickerBackground.color = HerbivorusColor;
+                PickerIcon.sprite = HerbivorusIcon;
+                break;
+
+            case CellInfo.Content.carnivorus:
+                PickerBackground.color = CarnivorusColor;
+                PickerIcon.sprite = CarnivorusIcon;
+                break;
+
+            default:
+                break;
+        }
     }
 
     public void UpdateSeed(int value, CellInfo.Content content = CellInfo.Content.dead)
     {
-        switch (CurrentContentMode)
-        {
-            case CellInfo.Content.plant:
-                m_PlantSeedText.text = $"seed : {value}";
+        if (content == CellInfo.Content.dead)
+            content = CurrentContentMode;
+
+        switch (content)
+        {
+            case CellInfo.Content.plant:
+                m_PlantSeedText.text = $"seed : {value}";
                 break;
 
             case CellInfo.Content.herbivorus:
@@ -176,12 +252,23 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void Pause()
-    {
-        for (int i = 0; i < 6; i++)
-        {
-            m_LifeLogics[i].Pause();
-        }
+    public void Pause()
+    {
+        GamePlaySpeed = 0f;
+        for (int i = 0; i < 6; i++)
+        {
+            m_LifeLogics[i].Pause();
+        }
+    }
+
+    public void PlayAtSpeed(float newSpeed)
+    {
+        GamePlaySpeed = newSpeed;
+
+        for (int i = 0; i < 6; i++)
+        {
+            m_LifeLogics[i].Play();
+        }
     }
 
     public void PlayAtSpeed(float newSpeed)
