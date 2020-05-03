@@ -18,7 +18,11 @@ public class LifeManager : MonoBehaviour
 
     private bool m_ShouldPlay = false;
 
-    private CellInfo.Content m_CurrentContentMode = CellInfo.Content.dead;
+    public int PlantSeeds = 10;
+
+    public int HerbivorusSeeds = 10;
+
+    public int CarnivorusSeeds = 10;
 
     [Header("Prey predator model")]
     [SerializeField]
@@ -53,27 +57,6 @@ public class LifeManager : MonoBehaviour
 
     public const int MAX_POPULATION_PER_CELL = 10000;
 
-    [Header("Picker")]
-    public Image PickerBackground = null;
-
-    public Image PickerIcon = null;
-
-    public Sprite PlantIcon = null;
-
-    public Sprite HerbivorusIcon = null;
-
-    public Sprite CarnivorusIcon = null;
-
-    public Sprite DeleteIcon = null;
-
-    public Color PlantColor = Color.white;
-
-    public Color HerbivorusColor = Color.white;
-
-    public Color CarnivorusColor = Color.white;
-
-    public Color DeleteColor = Color.white;
-
     private bool m_Configured = false;
 
     // Start is called before the first frame update
@@ -95,8 +78,6 @@ public class LifeManager : MonoBehaviour
 
     public void ConfigureGrid(float[,] heighMap, float waterLevel, int planetResolution, int meshID)
     {
-        SetMode(1);
-
         if (m_Configured)
             return;
 
@@ -144,44 +125,46 @@ public class LifeManager : MonoBehaviour
         m_Configured = true;
     }
 
+    public void UpdateSeedDisplay()
+    {
+        GameManager.Instance.UpdateSeed(PlantSeeds, CellInfo.Content.plant);
+        GameManager.Instance.UpdateSeed(HerbivorusSeeds, CellInfo.Content.herbivorus);
+        GameManager.Instance.UpdateSeed(CarnivorusSeeds, CellInfo.Content.carnivorus);
+    }
+
     #region Player interactions
 
-    public void SetMode(int mode)
+    public void SelectCell(CellInfo cell)
     {
-        m_CurrentContentMode = (CellInfo.Content)mode;
+        int currentSeedValue = 0;
 
-        CellInfo.Content currentMode = (CellInfo.Content)mode;
-
-        switch (currentMode)
+        switch (GameManager.Instance.CurrentContentMode)
         {
-            case CellInfo.Content.dead:
-                PickerBackground.color = DeleteColor;
-                PickerIcon.sprite = DeleteIcon;
-                break;
-
             case CellInfo.Content.plant:
-                PickerBackground.color = PlantColor;
-                PickerIcon.sprite = PlantIcon;
+                PlantSeeds--;
+                currentSeedValue = PlantSeeds;
                 break;
 
             case CellInfo.Content.herbivorus:
-                PickerBackground.color = HerbivorusColor;
-                PickerIcon.sprite = HerbivorusIcon;
+                HerbivorusSeeds--;
+                currentSeedValue = HerbivorusSeeds;
                 break;
 
             case CellInfo.Content.carnivorus:
-                PickerBackground.color = CarnivorusColor;
-                PickerIcon.sprite = CarnivorusIcon;
+                CarnivorusSeeds--;
+                currentSeedValue = CarnivorusSeeds;
                 break;
 
             default:
                 break;
         }
-    }
 
-    public void SelectCell(CellInfo cell)
-    {
-        cell.SetContentManually(m_CurrentContentMode, 200f);
+        if (currentSeedValue < 0)
+            return;
+
+        cell.SetContentManually(GameManager.Instance.CurrentContentMode, 200f);
+
+        GameManager.Instance.UpdateSeed(currentSeedValue);
     }
 
     public void SelectMap(MapInfo map)
