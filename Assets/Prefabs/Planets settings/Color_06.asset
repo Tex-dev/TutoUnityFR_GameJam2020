@@ -10,26 +10,26 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 676f694f022566a4fa466eaf164ffd60, type: 3}
-  m_Name: Color_05
+  m_Name: Color_06
   m_EditorClassIdentifier: 
   m_planetMat: {fileID: 2100000, guid: a33584af4960ab8409641426bc51946c, type: 2}
   m_biomeColorSettings:
     m_biomes:
     - m_gradient:
         serializedVersion: 2
-        key0: {r: 0, g: 0.81960785, b: 0.802871, a: 1}
-        key1: {r: 0.8679245, g: 0.85902846, b: 0.28248486, a: 1}
-        key2: {r: 0.2808477, g: 0.7075472, b: 0.19023673, a: 0}
-        key3: {r: 0.16899985, g: 0.9245283, b: 0, a: 0}
-        key4: {r: 0.15772733, g: 0.8773585, b: 0, a: 0}
-        key5: {r: 0.042132236, g: 0.32487458, b: 0.032525975, a: 0}
-        key6: {r: 0.033374865, g: 0.2830189, b: 0.034990113, a: 0}
-        key7: {r: 1, g: 1, b: 1, a: 0}
+        key0: {r: 0.35686275, g: 0.10980393, b: 0.8588236, a: 1}
+        key1: {r: 0.4034179, g: 0.012014951, b: 0.509434, a: 1}
+        key2: {r: 0.7058824, g: 0.19215687, b: 0.49054018, a: 0}
+        key3: {r: 0.9254902, g: 0, b: 0.8123163, a: 0}
+        key4: {r: 0.8784314, g: 0, b: 0.8784121, a: 0}
+        key5: {r: 0.4433962, g: 0.064836234, b: 0.315256, a: 0}
+        key6: {r: 0.24528301, g: 0.10297258, b: 0.18853071, a: 0}
+        key7: {r: 0.33962262, g: 0.13937344, b: 0.27624077, a: 0}
         ctime0: 0
-        ctime1: 4433
-        ctime2: 9830
+        ctime1: 4241
+        ctime2: 10216
         ctime3: 15227
-        ctime4: 28913
+        ctime4: 29105
         ctime5: 46260
         ctime6: 60138
         ctime7: 64764

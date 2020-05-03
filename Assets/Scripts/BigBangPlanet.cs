@@ -9,14 +9,15 @@ public class BigBangPlanet : MonoBehaviour
     private bool        m_rotate = false;
     private Vector3     m_axis;
     
-    private float       m_size;
+    private float       m_size = 0.0f;
     private float       m_stepSizeBySecond;
 
 
     // Start is called before the first frame update
     void Start()
     {
-        m_size = UnityEngine.Random.Range(0.5f, 2.5f);
+        if (m_size == 0.0f)
+            m_size = UnityEngine.Random.Range(0.5f, 2.5f);
 
         if(GetComponent<Planet>() != null)
             transform.localScale = new Vector3(0.0f, 0.0f, 0.0f);
@@ -54,6 +55,9 @@ public class BigBangPlanet : MonoBehaviour
     public void Go(float expansionTime)
     {
         m_go = true;
+
+        if (m_size == 0.0f)
+            m_size = UnityEngine.Random.Range(0.5f, 2.5f);
 
         m_stepSizeBySecond = m_size / expansionTime;
     }

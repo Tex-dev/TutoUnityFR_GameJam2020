@@ -97,7 +97,9 @@ public class SimpleTextAnimator : MonoBehaviour
 
         m_Content = m_Text.text;
         m_Text.text = "";
-        m_nextText.SetActive(false);
+
+        if(m_nextText != null)
+           m_nextText.SetActive(false);
 
         StartCoroutine(Animate());
     }
@@ -151,7 +153,8 @@ public class SimpleTextAnimator : MonoBehaviour
         }
 
         OnAnimationEnded?.Invoke();
-        m_nextText.SetActive(true);
+        if (m_nextText != null)
+            m_nextText.SetActive(true);
         gameObject.SetActive(false);
     }
 }

@@ -23,6 +23,8 @@ public class BigBang : MonoBehaviour
     [SerializeField]
     private float                   m_expansionTime = 0.0f;
 
+    private bool                    m_isBigBangHappened = false;
+
     public Action                   OnExpansionEnded;
 
     [SerializeField]
@@ -40,12 +42,14 @@ public class BigBang : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.A) && m_ok)
+        if(Input.GetKeyDown(KeyCode.A) && m_ok && !m_isBigBangHappened)
         {
             m_textAnim.gameObject.SetActive(false);
 
             BeginExpansion();
             Invoke("EndExpansion", m_expansionTime);
+
+            m_isBigBangHappened = true;
         }
     }
 
