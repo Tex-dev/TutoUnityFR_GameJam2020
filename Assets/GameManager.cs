@@ -260,16 +260,6 @@ public class GameManager : MonoBehaviour
             m_LifeLogics[i].Pause();
         }
     }
-
-    public void PlayAtSpeed(float newSpeed)
-    {
-        GamePlaySpeed = newSpeed;
-
-        for (int i = 0; i < 6; i++)
-        {
-            m_LifeLogics[i].Play();
-        }
-    }
 
     public void PlayAtSpeed(float newSpeed)
     {
