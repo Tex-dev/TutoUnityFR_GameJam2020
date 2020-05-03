@@ -34,6 +34,9 @@ public class Planet : MonoBehaviour
     [SerializeField]
     private Canvas TutorialCanvas = null;
 
+    [SerializeField]
+    private Toggle TutorialToggle = null;
+
     private void Start()
     {
         GeneratePlanet();
@@ -114,6 +117,7 @@ public class Planet : MonoBehaviour
             }
         }
         TutorialCanvas.gameObject.SetActive(true);
+        TutorialToggle.gameObject.SetActive(true);
     }
 
     public void GeneratePlanet()
