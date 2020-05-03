@@ -101,8 +101,8 @@ public class SimpleTextAnimator : MonoBehaviour
         m_Content = m_Text.text;
         m_Text.text = "";
 
-        if(m_nextText != null)
-           m_nextText.SetActive(false);
+        if (m_nextText != null)
+            m_nextText.SetActive(false);
 
         StartCoroutine(Animate());
     }
@@ -147,17 +147,19 @@ public class SimpleTextAnimator : MonoBehaviour
 
         m_TypingAudioSource.PlayOneShot(m_CarriageReturnSFX);
 
-        while(m_Text.color.a >0.0f)
+        if (m_TimeBeforeDisable != -1f)
         {
-            Color color = m_Text.color;
-            m_Text.color = new Color(color.r, color.g, color.b, color.a - 0.01f);
+            while (m_Text.color.a > 0.0f)
+            {
+                Color color = m_Text.color;
+                m_Text.color = new Color(color.r, color.g, color.b, color.a - 0.01f);
 
-            yield return new WaitForSeconds(m_TimeBeforeDisable / 100.0f);
+                yield return new WaitForSeconds(m_TimeBeforeDisable / 100.0f);
+            }
+            OnAnimationEnded?.Invoke();
+            if (m_nextText != null)
+                m_nextText.SetActive(true);
+            gameObject.SetActive(false);
         }
-
-        OnAnimationEnded?.Invoke();
-        if (m_nextText != null)
-            m_nextText.SetActive(true);
-        gameObject.SetActive(false);
     }
 }
