@@ -22,6 +22,8 @@ public class GoToThePlanet : MonoBehaviour
     [SerializeField]
     private float       m_speed = 0.0f;
 
+    private bool        m_testNearAstres = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -31,13 +33,29 @@ public class GoToThePlanet : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(m_targetPlanet != null)
+        if (m_moveToPlanet && m_targetPlanet != null)
         {
+            if(!m_testNearAstres)
+            {
+                float distance = Vector3.Distance(m_targetPlanet.transform.position, m_planetToMove.position);
 
-        }
+                Transform parent = m_planetToMove.parent;
+                int nbChildren = parent.childCount;
 
-        if (m_moveToPlanet && m_planetToMove != null)
-        {
+                for (int i = 0; i < nbChildren; i++)
+                {
+                    Transform child = parent.GetChild(i);
+
+                    if (child == m_planetToMove)
+                        continue;
+
+                    if (Vector3.Distance(m_planetToMove.position, child.position) < distance)
+                        child.gameObject.SetActive(false);
+                }
+
+                m_testNearAstres = true;
+            }
+
             if ( Vector3.Distance(transform.position, m_targetPlanet.transform.position) > 0.1f)
             {
                 transform.position = Vector3.Lerp(transform.position, m_targetPlanet.transform.position, m_speed * Time.deltaTime);
