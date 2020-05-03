@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class LifeManager : MonoBehaviour
 {
@@ -52,6 +53,27 @@ public class LifeManager : MonoBehaviour
 
     public const int MAX_POPULATION_PER_CELL = 10000;
 
+    [Header("Picker")]
+    public Image PickerBackground = null;
+
+    public Image PickerIcon = null;
+
+    public Sprite PlantIcon = null;
+
+    public Sprite HerbivorusIcon = null;
+
+    public Sprite CarnivorusIcon = null;
+
+    public Sprite DeleteIcon = null;
+
+    public Color PlantColor = Color.white;
+
+    public Color HerbivorusColor = Color.white;
+
+    public Color CarnivorusColor = Color.white;
+
+    public Color DeleteColor = Color.white;
+
     private bool m_Configured = false;
 
     // Start is called before the first frame update
@@ -73,6 +95,8 @@ public class LifeManager : MonoBehaviour
 
     public void ConfigureGrid(float[,] heighMap, float waterLevel, int planetResolution, int meshID)
     {
+        SetMode(1);
+
         if (m_Configured)
             return;
 
@@ -125,6 +149,34 @@ public class LifeManager : MonoBehaviour
     public void SetMode(int mode)
     {
         m_CurrentContentMode = (CellInfo.Content)mode;
+
+        CellInfo.Content currentMode = (CellInfo.Content)mode;
+
+        switch (currentMode)
+        {
+            case CellInfo.Content.dead:
+                PickerBackground.color = DeleteColor;
+                PickerIcon.sprite = DeleteIcon;
+                break;
+
+            case CellInfo.Content.plant:
+                PickerBackground.color = PlantColor;
+                PickerIcon.sprite = PlantIcon;
+                break;
+
+            case CellInfo.Content.herbivorus:
+                PickerBackground.color = HerbivorusColor;
+                PickerIcon.sprite = HerbivorusIcon;
+                break;
+
+            case CellInfo.Content.carnivorus:
+                PickerBackground.color = CarnivorusColor;
+                PickerIcon.sprite = CarnivorusIcon;
+                break;
+
+            default:
+                break;
+        }
     }
 
     public void SelectCell(CellInfo cell)

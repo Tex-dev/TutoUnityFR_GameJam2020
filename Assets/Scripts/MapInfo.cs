@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class MapInfo : MonoBehaviour
 {
@@ -10,7 +11,8 @@ public class MapInfo : MonoBehaviour
 
     private void OnMouseUp()
     {
-        GameManager.SelectMesh(ID, CellHeighMap);
+        if (EventSystem.current.currentSelectedGameObject == null)
+            GameManager.SelectMesh(ID, CellHeighMap);
     }
 
     private void OnMouseEnter()
