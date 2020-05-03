@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class GameOfLife : MonoBehaviour
+public class LifeManager : MonoBehaviour
 {
     [Header("Game parameters")]
     private List<CellInfo> Cells = new List<CellInfo>();
@@ -14,8 +14,6 @@ public class GameOfLife : MonoBehaviour
     private int m_GridWidth = 10;
 
     private int m_GridHeight = 10;
-
-    public float PlaySpeed = 0.5f;
 
     private bool m_ShouldPlay = false;
 
@@ -54,6 +52,8 @@ public class GameOfLife : MonoBehaviour
 
     public const int MAX_POPULATION_PER_CELL = 10000;
 
+    private bool m_Configured = false;
+
     // Start is called before the first frame update
     private void Start()
     {
@@ -71,6 +71,57 @@ public class GameOfLife : MonoBehaviour
         }
     }
 
+    public void ConfigureGrid(float[,] heighMap, float waterLevel, int planetResolution, int meshID)
+    {
+        if (m_Configured)
+            return;
+
+        bool[,] drowned = new bool[planetResolution, planetResolution];
+
+        for (int i = 0; i < planetResolution; i++)
+        {
+            for (int j = 0; j < planetResolution; j++)
+            {
+                if (heighMap[i, j] < waterLevel)
+                    drowned[i, j] = true;
+                else
+                    drowned[i, j] = false;
+            }
+        }
+
+        int caseWidth = planetResolution / m_GridWidth;
+        int caseHeight = planetResolution / m_GridHeight;
+
+        for (int i = 0; i < m_GridWidth; i++)
+        {
+            for (int j = 0; j < m_GridHeight; j++)
+            {
+                int nbDrowned = 0;
+
+                for (int k = 0; k < caseWidth; k++)
+                {
+                    for (int l = 0; l < caseHeight; l++)
+                    {
+                        if (drowned[i * caseWidth + k, j * caseHeight + l])
+                            nbDrowned++;
+                    }
+                }
+
+                if (nbDrowned > caseWidth * caseHeight * 0.8f)
+                {
+                    CellsArray[i, j].SetContentManually(CellInfo.Content.water);
+                }
+                else
+                {
+                }
+            }
+        }
+
+        m_Configured = true;
+    }
+
+    #region Player interactions
+
     public void SetMode(int mode)
     {
         m_CurrentContentMode = (CellInfo.Content)mode;
@@ -81,7 +132,14 @@ public class GameOfLife : MonoBehaviour
         cell.SetContentManually(m_CurrentContentMode, 200f);
     }
 
-    private void Play()
+    public void SelectMap(MapInfo map)
+    {
+        Debug.Log(map.name);
+    }
+
+    #region Time management
+
+    public void Play()
     {
         if (!m_ShouldPlay)
         {
@@ -95,11 +153,11 @@ public class GameOfLife : MonoBehaviour
         m_ShouldPlay = false;
     }
 
-    public void SpeedChange(float newSpeed)
-    {
-        PlaySpeed = newSpeed;
-        Play();
-    }
+    #endregion Time management
+
+    #endregion Player interactions
+
+    #region Game of life Logic
 
     private IEnumerator LifeLogic()
     {
@@ -123,7 +181,7 @@ public class GameOfLife : MonoBehaviour
             {
                 cell.UpdateContent();
             }
-            yield return new WaitForEndOfFrame();//new WaitForSeconds(PlaySpeed);
+            yield return new WaitForEndOfFrame();
         }
     }
 
@@ -137,9 +195,9 @@ public class GameOfLife : MonoBehaviour
 
         float deltaCarnivorus = m_CarnivorusGrowth * cell.HerbivorusPopulation * cell.CarnivorusPopulation - m_CarnivorusLossRate * cell.CarnivorusPopulation;
 
-        deltaPlant *= Time.deltaTime * 1f / PlaySpeed;
-        deltaHerbivorus *= Time.deltaTime * 1f / PlaySpeed;
-        deltaCarnivorus *= Time.deltaTime * 1f / PlaySpeed;
+        deltaPlant *= Time.deltaTime * 1f / GameManager.PlaySpeed;
+        deltaHerbivorus *= Time.deltaTime * 1f / GameManager.PlaySpeed;
+        deltaCarnivorus *= Time.deltaTime * 1f / GameManager.PlaySpeed;
 
         cell.PlantPopulation += deltaPlant;
         cell.PlantPopulation = Mathf.Floor(Mathf.Clamp(cell.PlantPopulation, 0f, MAX_POPULATION_PER_CELL));
@@ -225,4 +283,6 @@ public class GameOfLife : MonoBehaviour
 
         return result;
     }
+
+    #endregion Game of life Logic
 }

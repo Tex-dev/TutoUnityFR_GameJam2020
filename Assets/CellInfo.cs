@@ -100,6 +100,7 @@ public class CellInfo : MonoBehaviour
 
                 break;
 
+            case Content.water:
             case Content.dead:
                 PlantPopulation = 0f;
                 HerbivorusPopulation = 0f;
@@ -121,24 +122,28 @@ public class CellInfo : MonoBehaviour
     public void UpdateContent()
     {
         if (m_Content == Content.water)
+        {
+            m_PlantImage.fillAmount = 1f;
+            m_PlantImage.color = Color.blue;
             return;
+        }
 
         if (TotalPopulation != PlantPopulation)
             m_PlantImage.fillAmount = TotalPopulation != 0f ? PlantPopulation / TotalPopulation : 0f;
         else
-            m_PlantImage.fillAmount = PlantPopulation / GameOfLife.MAX_POPULATION_PER_CELL;
+            m_PlantImage.fillAmount = PlantPopulation / LifeManager.MAX_POPULATION_PER_CELL;
 
         if (TotalPopulation != HerbivorusPopulation)
             m_HerbivorusImage.fillAmount = TotalPopulation != 0f ? HerbivorusPopulation / TotalPopulation : 0f;
         else
-            m_HerbivorusImage.fillAmount = HerbivorusPopulation / GameOfLife.MAX_POPULATION_PER_CELL;
+            m_HerbivorusImage.fillAmount = HerbivorusPopulation / LifeManager.MAX_POPULATION_PER_CELL;
 
         m_HerbivorusImage.transform.eulerAngles = new Vector3(0f, 0f, -m_PlantImage.fillAmount * 360f);
 
         if (TotalPopulation != CarnivorusPopulation)
             m_CarnivorusImage.fillAmount = TotalPopulation != 0f ? CarnivorusPopulation / TotalPopulation : 0f;
         else
-            m_CarnivorusImage.fillAmount = CarnivorusPopulation / GameOfLife.MAX_POPULATION_PER_CELL;
+            m_CarnivorusImage.fillAmount = CarnivorusPopulation / LifeManager.MAX_POPULATION_PER_CELL;
 
         m_CarnivorusImage.transform.eulerAngles = new Vector3(0f, 0f, -(m_PlantImage.fillAmount + m_HerbivorusImage.fillAmount) * 360f);
     }
