@@ -80,8 +80,6 @@ public class Planet : MonoBehaviour
         Initialize();
         GenerateMesh();
         GenerateColors();
-
-        GameManager.SetPlanetParameters(m_shapeGenerator.m_elevationMinMax.Min + (m_shapeGenerator.m_elevationMinMax.Max - m_shapeGenerator.m_elevationMinMax.Min) * 5f / 100f, m_res);
     }
 
     public void OnShapeSettingsUpdated()
@@ -124,6 +122,8 @@ public class Planet : MonoBehaviour
         }
 
         m_colorGenerator.UpdateElevation(m_shapeGenerator.m_elevationMinMax);
+
+        GameManager.SetPlanetParameters(m_shapeGenerator.m_elevationMinMax.Min + (m_shapeGenerator.m_elevationMinMax.Max - m_shapeGenerator.m_elevationMinMax.Min) * 5f / 100f, m_res);
     }
 
     private void GenerateColors()
