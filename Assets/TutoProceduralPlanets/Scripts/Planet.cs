@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Planet : MonoBehaviour
 {
@@ -29,6 +30,9 @@ public class Planet : MonoBehaviour
     private MeshFilter[] m_meshFilters;
 
     private TerrainFace[] m_terrainFaces;
+
+    [SerializeField]
+    private Canvas TutorialCanvas = null;
 
     private void Start()
     {
@@ -109,6 +113,7 @@ public class Planet : MonoBehaviour
                 mapInfo.ActivateGameOfLife();
             }
         }
+        TutorialCanvas.gameObject.SetActive(true);
     }
 
     public void GeneratePlanet()
